@@ -1,16 +1,10 @@
 package com.api.management.prueba.request;
 
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Date;
 
-@Getter
-@Setter
 public class DeliveryRequest implements Serializable {
 
     @NotNull(message = "Id cliente es requerido")
@@ -46,4 +40,83 @@ public class DeliveryRequest implements Serializable {
 //    @NotNull(message = "numero de rastreo es requerido")
 //    private String trakingNumber;
 
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public Long getWarehouseId() {
+        return warehouseId;
+    }
+
+    public void setWarehouseId(Long warehouseId) {
+        this.warehouseId = warehouseId;
+    }
+
+    public Long getLogisticId() {
+        return logisticId;
+    }
+
+    public void setLogisticId(Long logisticId) {
+        this.logisticId = logisticId;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(String deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public String getTransportNumber() {
+        return transportNumber;
+    }
+
+    public void setTransportNumber(String transportNumber) {
+        this.transportNumber = transportNumber;
+    }
 }

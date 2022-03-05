@@ -1,16 +1,11 @@
 package com.api.management.prueba.request;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Getter
-@Setter
 public class ProductRequest implements Serializable {
     @NotBlank(message = "nombre requerido")
     @NotNull(message = "nombre requerido")
@@ -22,4 +17,28 @@ public class ProductRequest implements Serializable {
     @NotBlank(message = "precio requerido")
     @NotNull(message = "precio requerido")
     private BigDecimal price;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
 }

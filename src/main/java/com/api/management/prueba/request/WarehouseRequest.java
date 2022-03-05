@@ -1,13 +1,8 @@
 package com.api.management.prueba.request;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.validation.constraints.*;
 import java.io.Serializable;
 
-@Getter
-@Setter
 public class WarehouseRequest implements Serializable {
 
     @NotBlank(message = "valor requerido")
@@ -17,4 +12,28 @@ public class WarehouseRequest implements Serializable {
     @Min(value=0, message = "solo acepta valores positivos" )
     private Integer type;
     private String description;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
