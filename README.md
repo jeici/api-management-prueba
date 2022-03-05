@@ -10,7 +10,7 @@ participante : Juan Carlos Serrano Mendoza
 * Base de datos: PostgreSQL.
 * framewor: spring boot version 2.6.3
 * documentacion de endpoint : swagger
-* despliegue: Heroku url: https://tranquil-thicket-58562.herokuapp.com/
+* despliegue: Heroku url: https://api-management-prueba.herokuapp.com
 
 #### Listado de EndPoint's
 * /api/auth/signup ; creacion de usuarios con listado de roles: admin, usr y cliente
@@ -38,7 +38,7 @@ Nota: para todos los endpoints crud, se crearon los mismos 5 tipos de operacion
 
 Autenticacion ejemplo:
 
-curl --location --request POST 'https://tranquil-thicket-58562.herokuapp.com/api/auth/login' \
+curl --location --request POST 'https://api-management-prueba.herokuapp.com/api/auth/login' \
 --header 'Content-Type: application/json' \
 --data-raw '{
 "username":"user.admin",
@@ -50,7 +50,7 @@ curl --location --request POST 'https://tranquil-thicket-58562.herokuapp.com/api
 
 Ejemplo de uso de token:
 
-curl --location --request POST 'https://tranquil-thicket-58562.herokuapp.com/crud/customer/' \
+curl --location --request POST 'https://api-management-prueba.herokuapp.com/crud/customer/' \
 --header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbi5sb2dpc3RpY2EiLCJpYXQiOjE2NDU0MTM3MjEsImV4cCI6MTY0NTUwMDEyMX0.0lCIUiDhp8q6DQv1sJOF2CKhBSSLhzoSC0E7GoLnA9Y8VIyiwrCEvTtFn-HFRAb7138tvnG1Jhd4bHJasLVjnA' \
 --header 'Content-Type: application/json' \
 --data-raw '{
