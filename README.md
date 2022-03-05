@@ -34,7 +34,6 @@ Nota: para todos los endpoints crud, se crearon los mismos 5 tipos de operacion
 
 ![Diagrama ER](C:\proyecto\api-management-prueba\ER logistic.png "Diagrama ER")
 
-
 ####Seguridad <br>
 
 Autenticacion ejemplo:
