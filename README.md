@@ -29,7 +29,6 @@ Nota: para todos los endpoints crud, se crearon los mismos 5 tipos de operacion
 * /{id} =Método HTTP: PUT: actualiza un registro de la entidad segun su id
 * /{id} = Método HTTP: DELETE : elimina un registro de la entidad.
 
-
 ####Base de datos (Diagrama E-R)
 
 ![Diagrama ER](https://github.com/jeici/api-management-prueba/blob/master/ER%20logistic.png "Diagrama ER")
