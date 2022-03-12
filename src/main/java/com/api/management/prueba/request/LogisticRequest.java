@@ -2,6 +2,7 @@ package com.api.management.prueba.request;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class LogisticRequest implements Serializable {
 
@@ -10,6 +11,8 @@ public class LogisticRequest implements Serializable {
     @Size(max = 100)
     private String name;
     private String description;
+    private BigDecimal discountRate;
+    private Boolean status;
 
     public String getName() {
         return name;
@@ -25,5 +28,21 @@ public class LogisticRequest implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public BigDecimal getDiscountRate() {
+        return discountRate;
+    }
+
+    public void setDiscountRate(BigDecimal discountRate) {
+        this.discountRate = discountRate;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 }

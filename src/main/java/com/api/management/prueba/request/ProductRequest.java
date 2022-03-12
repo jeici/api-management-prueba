@@ -17,6 +17,7 @@ public class ProductRequest implements Serializable {
     @NotBlank(message = "precio requerido")
     @NotNull(message = "precio requerido")
     private BigDecimal price;
+    private Boolean status;
 
     public String getName() {
         return name;
@@ -40,5 +41,13 @@ public class ProductRequest implements Serializable {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 }

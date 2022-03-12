@@ -12,6 +12,7 @@ public class WarehouseRequest implements Serializable {
     @Min(value=0, message = "solo acepta valores positivos" )
     private Integer type;
     private String description;
+    private Boolean status;
 
     public String getName() {
         return name;
@@ -35,5 +36,13 @@ public class WarehouseRequest implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 }

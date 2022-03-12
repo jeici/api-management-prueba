@@ -21,6 +21,13 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Clase dedicada al manejo de entregas.
+ *
+ * @author JuanSerrano
+ * @version 0.0.1
+ * @since 05-03-2022
+ */
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/delivery")
@@ -36,36 +43,50 @@ public class DeliveryController {
     @Autowired
     WarehouseRepository warehouseRepository;
 
+    /**
+     * Metodo que permite obtener todas las entrega por cliente.
+     *
+     * @param id es el codigo del cliente.
+     * @return el listado de las entregas asociadas a ese codigo cliente.
+     */
     @GetMapping("/allByClient/{id}")
     public ResponseEntity<List<Delivery>> getAll(@PathVariable("id") Long id) {
         List<Delivery> deliveries = new ArrayList<>();
         Customer cus = new Customer();
-        if (id <= 0 )
-            throw  new ResourceNotFoundException("Debe ingresar un cliente existente  " + id);
+        HttpStatus msg = HttpStatus.NO_CONTENT;
+        if (id <= 0)
+            throw new ResourceNotFoundException("Debe ingresar un cliente existente  " + id);
         else
             cus = customerRepository.findById(id).
                     orElseThrow(() -> new ResourceNotFoundException("No se encuentra cliente con este identificador = " + id));
 
         deliveries = deliveryRepository.findByCustomerId(cus);
-        if (deliveries.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (!deliveries.isEmpty()) {
+            msg = HttpStatus.OK;
         }
-        return new ResponseEntity<>(deliveries, HttpStatus.OK);
+        return new ResponseEntity<>(deliveries, msg);
     }
 
+    /**
+     * Metodo que permite crear una entidad del tipo delivery.
+     *
+     * @param request son los datos a procesar.
+     * @return devuelve el mensaje de la creacion de la entidad.
+     */
     @PostMapping("/")
-    public ResponseEntity<Delivery> createDelivery(@Valid @RequestBody DeliveryRequest request){
-        Delivery delivery= new Delivery();
+    public ResponseEntity<Delivery> createDelivery(@Valid @RequestBody DeliveryRequest request) {
+        Delivery delivery = new Delivery();
         delivery.setCustomerId(new Customer());
         delivery.setProductId(new Product());
         delivery.setLogisticId(new Logistic());
         delivery.setWarehouseId(new Warehouse());
 
-        Pattern pattern1 ;
-        Matcher matcher1 ;
-        Pattern patternDate ;
-        Matcher matcherDate ;
-        if(valid(request)){
+        HttpStatus msg = HttpStatus.BAD_REQUEST;
+        Pattern pattern1;
+        Matcher matcher1;
+        Pattern patternDate;
+        Matcher matcherDate;
+        if (valid(request)) {
             delivery.setCustomerId(customerRepository.findById(request.getCustomerId()).
                     orElseThrow(() -> new ResourceNotFoundException("No se encuentra cliente con este identificador = " + request.getCustomerId())));
             delivery.setLogisticId(logisticRepository.findById(request.getLogisticId()).
@@ -75,24 +96,24 @@ public class DeliveryController {
             delivery.setProductId(productRepository.findById(request.getProductId()).
                     orElseThrow(() -> new ResourceNotFoundException("No se encuentra este producto = " + request.getProductId())));
 
-            if(delivery.getLogisticId().getId()==1){
+            if (delivery.getLogisticId().getId() == 1) {
                 pattern1 = Pattern.compile("^[A-Z]{3}[0-9]{3}$");
-            }else{
-                pattern1 =Pattern.compile("^[A-Z]{3}[0-9]{4}[A-Z]{1}$");
+            } else {
+                pattern1 = Pattern.compile("^[A-Z]{3}[0-9]{4}[A-Z]{1}$");
             }
 
             matcher1 = pattern1.matcher(request.getTransportNumber());
-            if(!matcher1.find()){
+            if (!matcher1.find()) {
                 throw new ResourceNotFoundException("Numero de transporte no coincide con el formato");
             }
 
             delivery.setTransportNumber(request.getTransportNumber());
             delivery.setTrakingNumber(generate());
-            if(!request.getDeliveryDate().isEmpty()){
+            if (!request.getDeliveryDate().isEmpty()) {
                 String regex = "(\\d{2,4})-(\\d{2})-(\\d{2})";
                 patternDate = Pattern.compile(regex);
                 matcherDate = patternDate.matcher(request.getDeliveryDate());
-                if(!matcherDate.find()){
+                if (!matcherDate.find()) {
                     throw new ResourceNotFoundException("Formato de fecha es incorrecto, YYYY-MM-DD");
                 }
                 LocalDateTime fecha = LocalDate.parse(request.getDeliveryDate()).atTime(LocalTime.from(LocalDateTime.now()));
@@ -105,70 +126,79 @@ public class DeliveryController {
             BigDecimal discount = BigDecimal.ZERO.setScale(8, RoundingMode.HALF_UP);
             BigDecimal subTotal = BigDecimal.ZERO.setScale(8, RoundingMode.HALF_UP);
             BigDecimal total = BigDecimal.ZERO.setScale(8, RoundingMode.HALF_UP);
-            if(delivery.getQuantity()>=10 ){
+            if (delivery.getQuantity() >= 10) {
                 subTotal = delivery.getPrice().multiply(new BigDecimal(delivery.getQuantity())).setScale(8, RoundingMode.HALF_UP);
                 discount = subTotal.multiply(delivery.getLogisticId().getDiscountRate().divide(new BigDecimal(100))).setScale(8, RoundingMode.HALF_UP);
 
-                if(discount.compareTo(request.getDiscount().setScale(8, RoundingMode.HALF_UP)) != 0){
+                if (discount.compareTo(request.getDiscount().setScale(8, RoundingMode.HALF_UP)) != 0) {
                     throw new ResourceNotFoundException("El descuento aplicado es incorrecto");
-                }else{
+                } else {
                     delivery.setDiscount(discount);
                 }
 
                 total = subTotal.subtract(discount);
 
-                if(total.compareTo(request.getTotal().setScale(8, RoundingMode.HALF_UP))!=0){
+                if (total.compareTo(request.getTotal().setScale(8, RoundingMode.HALF_UP)) != 0) {
                     throw new ResourceNotFoundException("El total es incorrecto");
-                }else{
+                } else {
                     delivery.setTotal(total);
                 }
-            }else{
+            } else {
                 delivery.setTotal(delivery.getProductId().getPrice().multiply(new BigDecimal(delivery.getQuantity())));
                 delivery.setDiscount(BigDecimal.ZERO);
             }
 
             deliveryRepository.save(delivery);
-
-            return new ResponseEntity<>(delivery, HttpStatus.CREATED);
+            msg = HttpStatus.CREATED;
         }
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(delivery, msg);
     }
 
-    public Boolean valid (DeliveryRequest d){
+    /**
+     * Metodo tipo boolean que recibe la peticio de los datos a procesar para validacion.
+     *
+     * @param d son los datos que se validaran
+     * @return el estado de la verificacion.
+     */
+    public Boolean valid(DeliveryRequest d) {
         //cliente
-        if (d.getCustomerId() <= 0 )
-            throw  new ResourceNotFoundException("Debe ingresar un cliente existente  " + d.getCustomerId());
+        if (d.getCustomerId() <= 0)
+            throw new ResourceNotFoundException("Debe ingresar un cliente existente  " + d.getCustomerId());
 
         //logistica
-        if (d.getLogisticId() <= 0 )
-            throw  new ResourceNotFoundException("Debe ingresar un tipo de logistica existente  " + d.getLogisticId());
+        if (d.getLogisticId() <= 0)
+            throw new ResourceNotFoundException("Debe ingresar un tipo de logistica existente  " + d.getLogisticId());
 
         //producto
-        if (d.getProductId() <= 0 )
-            throw  new ResourceNotFoundException("Debe ingresar un producto existente  " + d.getProductId());
+        if (d.getProductId() <= 0)
+            throw new ResourceNotFoundException("Debe ingresar un producto existente  " + d.getProductId());
 
         //bodega
-        if (d.getWarehouseId() <= 0 )
-            throw  new ResourceNotFoundException("Debe ingresar una bodega existente  " + d.getWarehouseId());
+        if (d.getWarehouseId() <= 0)
+            throw new ResourceNotFoundException("Debe ingresar una bodega existente  " + d.getWarehouseId());
 
         //cantidad
-        if (d.getQuantity() <= 0 )
-            throw  new ResourceNotFoundException("la cantidad de producto es requerido " + d.getQuantity());
+        if (d.getQuantity() <= 0)
+            throw new ResourceNotFoundException("la cantidad de producto es requerido " + d.getQuantity());
 
         //fecha de entrega
-        if(d.getDeliveryDate() == null)
-            throw  new ResourceNotFoundException("fecha de entrega es requerida" + d.getDeliveryDate());
+        if (d.getDeliveryDate() == null)
+            throw new ResourceNotFoundException("fecha de entrega es requerida" + d.getDeliveryDate());
 
         // numero de transporte
-        if(d.getTransportNumber() == null)
-            throw  new ResourceNotFoundException("el numero de transporte es requerido" + d.getTransportNumber());
+        if (d.getTransportNumber() == null)
+            throw new ResourceNotFoundException("el numero de transporte es requerido" + d.getTransportNumber());
 
         return true;
     }
 
-    public String  generate() {
-
+    /**
+     * Metodo que genera un codigo aleatorio para el traking
+     *
+     * @return codigo generado automaticamente de forma aleatoria.
+     */
+    public String generate() {
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 10;
