@@ -31,7 +31,7 @@ Nota: para todos los endpoints crud, se crearon los mismos 5 tipos de operacion
 
 ####Base de datos (Diagrama E-R)
 
-![Diagrama ER](https://github.com/jeici/api-management-prueba/blob/master/ER%20logistic.png "Diagrama ER")
+![Diagrama ER](ER logistic.png "Diagrama ER")
 
 ####Seguridad <br>
 
